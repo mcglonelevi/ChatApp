@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; margin-bottom: 50px; margin-top: 75px; }
+      .form { position: fixed; bottom: 0; width: 100%; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; border: solid 1px #333; margin: 5px;}
+      .heading h1 {
+        font-family: sans-serif;
+        color: #fff;
+        padding:20px;
+        background: rgb(71, 165, 226);
+        position: fixed;
+        top: 0;
+        width: 100%;
+      }
+      div.mce-tinymce-inline {
+        width: 100%;
+        display: block !important;
+      }
+    </style>
+    <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=5vhakebrhwvsegmsiewsjilndauydn1jg9906z3ubwsqzjod"></script>
+    <script>tinymce.init({
+      selector:'#m',
+      branding: false,
+      menu: {
+
+      },
+      toolbar: 'bold italic',
+      statusbar: false,
+      inline: true,
+      fixed_toolbar_container: '#toolbar'
+    });</script>
+  </head>
+  <body>
+    <div class="heading">
+      <h1>Chat App</h1>
+    </div>
+    <ul id="messages">
+    </ul>
+    <div style="display:flex;" class="form">
+      <div id="toolbar">
+
+      </div>
+      <div style="flex-grow:1;">
+        <div id="m" style="height:39px; padding:2px; outline:none; background: rgb(71, 165, 226); color: #fff;">Type a message.</div>
+      </div>
+      <button onclick="submitForm()" style="width:140px;">Send Message</button>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var name = prompt('Enter your name: ');
+      var socket = io();
+      socket.on('propMessage', function (msg) {
+        document.getElementById('messages').innerHTML += "<li class='question'><h5>" + msg.u + ':</h5> ' + msg.m + "</li>";
+        window.scrollTo(0,document.body.scrollHeight);
+      });
+      function submitForm(e) {
+        var message = document.getElementById('m').innerHTML;
+        document.getElementById('m').innerHTML = '';
+        socket.emit('message', {
+          u: name,
+          m: message
+        });
+      }
+    </script>
+  </body>
+</html>
