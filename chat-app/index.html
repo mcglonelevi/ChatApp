@@ -52,6 +52,22 @@
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script>
+      function loadMsgs() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            var docs = JSON.parse(this.responseText);
+            docs.reverse();
+            for (var i = 0; i < docs.length; i++) {
+              document.getElementById('messages').innerHTML += "<li class='question'><h5>" + docs[i].u + ':</h5> ' + docs[i].m + "</li>";
+            }
+            console.log(docs);
+          }
+        };
+        xhttp.open("GET", "/hist", true);
+        xhttp.send();
+      }
+      loadMsgs();
       var name = prompt('Enter your name: ');
       var socket = io();
       socket.on('propMessage', function (msg) {
